@@ -34,6 +34,10 @@ public class DueDateCalculator {
 		long requiredWorkDays = nanosForFollowingDays / WORKING_NANOS_PER_DAY;
 		LocalDate dueDate = getDueDate(submitDate, requiredWorkDays);
 		long remainingNanosForDueDate = nanosForFollowingDays % WORKING_NANOS_PER_DAY;
+		if(remainingNanosForDueDate == 0) {
+			return LocalDateTime.of(dueDate, END_OF_WORK);
+		}
+		dueDate = getNextWorkDayDate(dueDate);
 		return LocalDateTime.of(dueDate, START_OF_WORK).plusNanos(remainingNanosForDueDate);
 	}
 
@@ -57,7 +61,7 @@ public class DueDateCalculator {
 	}
 
 	private LocalDate getDueDate(LocalDate baseDate, long requiredWorkingDays) {
-		LocalDate dueDate = getNextWorkDayDate(baseDate);
+		LocalDate dueDate = baseDate;
 		for(int i = 0; i < requiredWorkingDays; i++) {
 			dueDate = getNextWorkDayDate(dueDate);
 		}
